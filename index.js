@@ -2,7 +2,7 @@ const express = require('express');
 const ws = require('ws');
 
 const app = express();
-const port = 3054;
+const port = 3064;
 
 const wsServer = new ws.Server({ noServer: true });
 wsServer.on('connection', socket => {
