@@ -33,7 +33,8 @@ const cb1 = function (webSocketClientInstance) {
     clients.set(webSocketClientInstance, metadata);
 
     // message Event is on webSocketClientInstance & not on wsServer itself
-        // anyway, whenever the client receives a message ----> cb2 is triggered
+        // but connection Event is on wsServer... wsServer can have multiple webSocketClientInstances
+        // anyway, whenever the client receives a message ----> callback is triggered...
     webSocketClientInstance.on('message', message => {
         console.log('message --------> ',message);
         console.log('parsed msg -----> ',JSON.parse(message));
