@@ -40,7 +40,7 @@ const cb1 = function (webSocketClientInstance) {
         console.log('parsed msg -----> ',JSON.parse(message));
         const metadata = clients.get(webSocketClientInstance);
         console.log(metadata);
-        console.log(wsServer.clients);
+        // console.log(wsServer.clients);
         // console.log(metadata.sender);
         // console.log(metadata.content);
     });
