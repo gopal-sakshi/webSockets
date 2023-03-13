@@ -4,7 +4,7 @@
   "description": "trying this web sockets thingy",
   "main": "index.js",
   "scripts": {
-    "start_webSockets": "node index.js",
+    "start_webSockets": "node index1.js",
     "start_chat23": "node index2.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
