@@ -1,0 +1,6 @@
+I dont want to create another repo for websockets...
+so, instead I will use this one...
+
+
+all the oldcode (till June 13, 2023) will be in old branch
+all the newcode will be in main branch

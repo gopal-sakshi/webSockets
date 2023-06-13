@@ -1,0 +1,18 @@
+websockets
+- its a technology that enables two-way realtime communication between client & server
+- lower memory requirements compared to socket.io
+- pretty basic
+-----------------------------------------------------------------------------------------------------
+
+socket.io
+- its a JavaScript library built on top of websockets
+    library that provides an abstraction layer on top of WebSockets
+- It does the same thing... like websockets
+    enables realtime, bi-directional communication between web clients and server. 
+- this library has two parts
+    a client-side library that runs in the browser
+    a server-side library for Node.js.
+- socket.io provides features like  
+    auto-reconnect, rooms, and fallback to long polling
+    with vanilla websockets, you have to build all these capabilities yourself
+-------------------------------------------------------------------------------------------------------
