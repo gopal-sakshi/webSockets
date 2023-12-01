@@ -1,0 +1,9 @@
+just disable all mongoose connections for the timebeing
+
+node index2.js
+open localhost:3065
+dont try to directly open the html file
+you'll get all sorts of different errors
+    CORS error
+    not able to load socket.io
+    io reference error
