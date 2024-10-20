@@ -1,61 +1,50 @@
-const uuidv4 = require('uuid4');
 const express = require('express');
 const ws = require('ws');
 const clients = new Map();
-
 const app = express();
-const port = 3064;
+const port = 6091;
 
-const wsServer = new ws.Server({ noServer: true });
+const wsServer = new ws.Server({ noServer: true });     // noServer: true
+wsServer.on('connection', cb1);
+const server = app.listen(port, () => { 
+    console.log(`Example app listening at http://localhost:${port}`) 
+});
 
-const cb3 = function() { console.log(`client disconnected`); }
+server.on('upgrade', (request, socket, head) => {
+    wsServer.handleUpgrade(request, socket, head, socket => { 
+        console.log("evado upgrade adigaadu... so emitting connection event");
+        wsServer.emit('connection', socket, request); 
+    });
+});
 
-const cb2 = function (message) {
-    // wsServer.clients.forEach(function each(client) {
-    //     if (client.readyState === ws.OPEN) {        
-    //         var serverResponse = {
-    //             source: "server", 
-    //             content: `your message "${message.content}" received bhai`,
-    //             timeStamp: new Date()
-    //         }
-    //         client.send(Buffer.from(JSON.stringify(serverResponse)), { binary: false });            
-    //     }
-    // });
-    // console.log(message.toString());
-}
-const cb1 = function (webSocketClientInstance) {
-    const id = uuidv4();
+// http://localhost:6091/base23 ===> ee index1.js "http" & "ws" response rendu serve cheyyagaladu... based on "upgrade" header 
+app.get('/base23', (req, res) => { res.send({ info23: 'http resp', time23: `${new Date().toISOString()}` }) })
+/******************************************************************************************************** */
+
+function cb1 (webSocketClientInstance) {
+    const id = Date.now();
     const color = Math.floor(Math.random() * 360);
     const metadata = { id, color };
     clients.set(webSocketClientInstance, metadata);
 
-    // message Event is on webSocketClientInstance & not on wsServer itself
-        // but connection Event is on wsServer... wsServer can have multiple webSocketClientInstances
-        // anyway, whenever the client receives a message ----> callback is triggered...
+    // MESSAGE
     webSocketClientInstance.on('message', message => {
         console.log('message --------> ',message);
-        console.log('parsed msg -----> ',JSON.parse(message));
         const metadata = clients.get(webSocketClientInstance);
-        console.log(metadata);
+        console.log("meta data of client ===> ", metadata);
     });
-    webSocketClientInstance.on('close', cb3);
+
+    // CLOSE
+    webSocketClientInstance.on('close', () => { console.log(`client disconnected23`); });
 }
-
-
-
 /******************************************************************************************************** */
-// connection event ----> cb1 callback gets triggered whenever a new webSocket client connects to server (testing angular app (or) postman)
-//                  ----> cb1 callback gets triggered which accepts a parameter, which is nothing but webSocketClientInstance
-wsServer.on('connection', cb1);
 
+/* 
+    server is a vanilla Node.js HTTP server
+    - so use the same ws upgrade process described here:
 
-// `server` is a vanilla Node.js HTTP server, so use
-// the same ws upgrade process described here:
-// https://www.npmjs.com/package/ws#multiple-servers-sharing-a-single-https-server
+    https://www.npmjs.com/package/ws#multiple-servers-sharing-a-single-https-server
 
-const server = app.listen(port, () => { console.log(`Example app listening at http://localhost:${port}`) });
+*/
 
-server.on('upgrade', (request, socket, head) => {
-    wsServer.handleUpgrade(request, socket, head, socket => { wsServer.emit('connection', socket, request); });
-});
 /******************************************************************************************************** */

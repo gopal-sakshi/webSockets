@@ -1,33 +1,56 @@
-var webSocketServer = new (require('ws')).Server({ port: (process.env.PORT || 3064) }),
-webSockets = {} // userID: webSocket
+var webSocketServer = new (require('ws')).Server({ port: 6093 });
+var webSockets = {};
 
-// CONNECT /:userID
-// wscat -c ws://localhost:5000/1
-webSocketServer.on('connection', function (webSocket) {
-    var userID = parseInt(webSocket.upgradeReq.url.substr(1), 10)
-    webSockets[userID] = webSocket
-    console.log('connected: ' + userID + ' in ' + Object.getOwnPropertyNames(webSockets))
+webSocketServer.on('connection', function (webSocket, req) {    
+    console.log("req URL & ip ===> ", req.url, req.socket.remoteAddress);
+    const userID = `user__${req.url.substring(1)}`;
+    webSockets[userID] = webSocket;
+    webSocket.id33 = `id23__${req.url}`;
 
-    // Forward Message
-    //
-    // Receive               Example
-    // [toUserID, text]      [2, "Hello, World!"]
-    //
-    // Send                  Example
-    // [fromUserID, text]    [1, "Hello, World!"]
-    webSocket.on('message', function (message) {
-        console.log('received from ' + userID + ': ' + message)
-        var messageArray = JSON.parse(message)
-        var toUserWebSocket = webSockets[messageArray[0]]
-        if (toUserWebSocket) {
-            console.log('sent to ' + messageArray[0] + ': ' + JSON.stringify(messageArray))
-            messageArray[0] = userID
-            toUserWebSocket.send(JSON.stringify(messageArray))
-        }
-    })
+    console.log('connected user23 ===> ' + userID);
+    // console.log("own property names ===> ", Object.getOwnPropertyNames(webSockets));
+    webSocket.on('message', function(message) { processMsg23 (message, userID) });
+    webSocket.on('close', closeConn23);
+});
+/*************************************************************************************/
 
-    webSocket.on('close', function () {
-        delete webSockets[userID]
-        console.log('deleted: ' + userID)
-    })
-})
+
+function processMsg23 (message, userID) {
+    console.log('received from ===> ' + message, );
+    // webSocketServer.clients  ===> is a Javascript "Set"; so cant use .map() like we do with array
+    for (const client23 of webSocketServer.clients) {
+        console.log("client Id ===> ", client23.id33, " ------- " ,client23.readyState)
+    }    
+    Object.keys(webSockets).map((item) => {     
+        webSockets[item].send(`${userID} antaadu ===> ${message}`);
+    });
+}
+
+function closeConn23 (param) {
+    // delete webSockets[userID]
+    console.log('deleted: ' + param)
+}
+/*************************************************************************************/
+
+/*
+    EXPLANATION
+
+    we started a server @ port 6093
+    but it uses ws protocol;
+    we cant test it using CURL bcoz, curl uses http protocol
+    there is "______NO http Server_____" in this index3.js file
+    
+    01) webSockets is an object
+    keys ======> user__Benzema, user__Modric
+    values ====> websocket client object --- 
+        it has properties like id33, readyState, send
+        if 3 clients are connected -- benz, luka, ramos ===> 3 webSocket client objects will be present
+    
+    
+    02)
+    webSocket.on('message', (message)); 
+    webSocket.on('message', function(message) { processMsg23 (message, userID) });
+    1st approach callback means, we cant pass userID property to processMsg23 function
+    2nd approach callback means, we CAN pass userID property
+
+*/

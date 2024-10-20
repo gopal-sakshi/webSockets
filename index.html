@@ -51,14 +51,14 @@
         }
 
         function getMessages() {
-            $.get('http://localhost:3065/messages', (data) => {
+            $.get('http://localhost:6092/messages', (data) => {
                 console.log(data);
             })
         }
 
         function sendMessage(message) {
             console.log('send triggered');
-            $.post('http://localhost:3065/messages', message)
+            $.post('http://localhost:6092/messages', message)
         }
     </script>
 
