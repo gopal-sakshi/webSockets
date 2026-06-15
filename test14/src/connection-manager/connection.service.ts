@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, OnModuleInit } from "@nestjs/common";
 import { WEB_SOCKETS_PREFIX } from "src/common/constants";
 import { PubSubService23 } from "src/pubsub/pubsub.service";
 import { WebSocket } from 'ws';
@@ -9,13 +9,15 @@ interface Connection {
 }
 
 @Injectable()
-export class ConnectionManagerService23 { 
+export class ConnectionManagerService23 implements OnModuleInit { 
 
     private connections: Map<string, Connection> = new Map();
     private channelSubscribers: Map<string, Set<string>> = new Map();
 
-    constructor(private pubSubService: PubSubService23) {
+    constructor(private pubSubService: PubSubService23) {}
 
+    async onModuleInit() {
+        await this.initializePubSub();
     }
 
     private async initializePubSub() {
@@ -27,13 +29,14 @@ export class ConnectionManagerService23 {
         this.routeMessage(channelKey, message);
     }
 
-    private routeMessage(channelKey:string, message:string) {
+    private routeMessage(channelKey:string, message:any) {
         const subscribers23 = this.channelSubscribers.get(channelKey);
         if(!subscribers23) return;
+        const payload = JSON.stringify({ event: channelKey, data:message });
         for (const clientId of subscribers23) {
             const connection = this.connections.get(clientId);
-            if(connection && connection.ws.readyState === 1) {
-                connection.ws.send(message);
+            if (connection && connection.ws.readyState === 1) {
+                connection.ws.send(payload);
             }
         }
     }
@@ -48,11 +51,16 @@ export class ConnectionManagerService23 {
 
     async disconnectByWebSocket(ws: WebSocket) {
         for (const [clientId, conn] of this.connections.entries()) {
-            if (conn.ws === ws) {
-                this.connections.delete(clientId);
-                console.log(`Untracked connection dropped: ${clientId}`);
-                break;
+
+            if (conn.ws !== ws) continue;
+
+            for (const channelKey of conn.channelKeys) {
+                this.channelSubscribers.get(channelKey)?.delete(clientId);
             }
+
+            this.connections.delete(clientId);
+            console.log(`Untracked connection dropped: ${clientId}`);
+            break;
         }
     }
 
@@ -66,10 +74,6 @@ export class ConnectionManagerService23 {
         });
     }
 
-    async onModuleInit() {
-        await this.initializePubSub();
-    }
-
     async addSubscription(clientId: string, channelKey: string) {
         const conn = this.connections.get(clientId);
         if (!conn) {
@@ -80,6 +84,16 @@ export class ConnectionManagerService23 {
             this.channelSubscribers.set(channelKey, new Set());
             await this.pubSubService.subscribe(`${WEB_SOCKETS_PREFIX}${channelKey}`)
         }
-        this.channelSubscribers.get(channelKey)?.add(clientId)
+        this.channelSubscribers.get(channelKey)?.add(clientId);
+        console.log(`Client ${clientId} subscirbed to channel: ${channelKey}`);
     }
+
+    async removeSubscription(clientId:string, channelKey:string) {
+        const conn = this.connections.get(clientId);
+        if(!conn) return;
+        conn.channelKeys.delete(channelKey);
+        this.channelSubscribers.get(channelKey)?.delete(clientId);
+        console.log(`Client ${clientId} unsubscribed from channel ${channelKey}`);
+    }
+
 }
