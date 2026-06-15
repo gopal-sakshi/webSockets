@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "start:dev": "nest start --watch"
+  },
+  "dependencies": {
+    "@nestjs-modules/ioredis": "^2.2.1",
+    "@nestjs/cli": "^11.0.23",
+    "@nestjs/config": "^4.0.4",
+    "@nestjs/microservices": "^11.1.27",
+    "@nestjs/platform-express": "^11.1.27",
+    "@nestjs/platform-ws": "^11.1.27",
+    "@nestjs/websockets": "^11.1.27",
+    "ioredis": "^5.11.1",
+    "kafkajs": "^2.2.4"
+  }
+}
