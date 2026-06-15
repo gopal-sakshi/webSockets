@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { getKafkaConfig } from './kafka-config';
 import { WsAdapter } from "@nestjs/platform-ws";
 import { KAFKA_CLIENT333 } from './kafka/kafka-provider';
+import { CustomWsAdapter45 } from './websocket/custom-ws-adapter';
 
 async function bootstrap() {
 
@@ -22,7 +23,7 @@ async function bootstrap() {
     const kafkaServer = kafkaReference.unwrap();
     const consumerReference = kafkaServer[1];
     kafkaProvider.setKafkaConsumer(consumerReference);
-    app.useWebSocketAdapter(new WsAdapter(app));
+    app.useWebSocketAdapter(new CustomWsAdapter45(app));
 
     await app.listen(17865, '0.0.0.0');
     console.log('Application is running on: http://localhost:17865');
