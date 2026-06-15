@@ -40,6 +40,9 @@ export class PubSubService23 implements OnModuleInit {
     }
 
     async publish(channel: string, message: string) {
+        // we are publishing to this channel ===== "webSockets_repo23:user23user-123"   OR
+        // we are publishing to this channel ===== "webSockets_repo23:user23user-456"
+        console.log("publishing23 ======= ", message);
         await this.publisher.publish(channel, message);
     }
 }

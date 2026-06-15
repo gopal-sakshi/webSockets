@@ -46,7 +46,7 @@ export class ConnectionManagerService23 implements OnModuleInit {
             ws,
             channelKeys: new Set<string>()
         });
-        console.log(`Tracked new connection: ${clientId}`);
+        console.log(`Tracked new connection233333333: ${clientId}`);
     }
 
     async disconnectByWebSocket(ws: WebSocket) {
@@ -82,7 +82,8 @@ export class ConnectionManagerService23 implements OnModuleInit {
         conn.channelKeys.add(channelKey);
         if(!this.channelSubscribers.has(channelKey)) {
             this.channelSubscribers.set(channelKey, new Set());
-            await this.pubSubService.subscribe(`${WEB_SOCKETS_PREFIX}${channelKey}`)
+            console.log("subscribing to channel ======= ", `${WEB_SOCKETS_PREFIX}${channelKey}`);
+            await this.pubSubService.subscribe(`${WEB_SOCKETS_PREFIX}${channelKey}`);
         }
         this.channelSubscribers.get(channelKey)?.add(clientId);
         console.log(`Client ${clientId} subscirbed to channel: ${channelKey}`);

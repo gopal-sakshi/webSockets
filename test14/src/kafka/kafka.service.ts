@@ -18,9 +18,12 @@ export class KafkaService {
 
     async processMessage23(message:any) {
         const topicKey = message.routingKey || 'broadcast';
+        console.log("topicKey ========== ", topicKey);
         const channel = `${WEB_SOCKETS_PREFIX}${topicKey}`;
         await Promise.all(
-            [this.pubsubService.publish(channel, JSON.stringify(message))]
+            // publish messages to channel ===========  "webSockets_repo23:user23user-123"
+            // publish messages to channel ===========  "webSockets_repo23:user23user-456"
+            [this.pubsubService.publish(channel, JSON.stringify(message))],
         )
     }
 

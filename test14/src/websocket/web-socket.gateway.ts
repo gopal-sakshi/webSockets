@@ -26,6 +26,9 @@ export class WebSocketGateway23 implements OnGatewayInit, OnGatewayConnection, O
         console.log('Native WS Gateway Initialized.');
     }
 
+    // In a NestJS WebSocket gateway using the ws platform
+    // the handleConnection method is triggered immediately 
+    // after the underlying WebSocket handshake is successfully completed between client and server.
     handleConnection(client: WebSocket, req: any) {
         const clientId = Math.random().toString(36).substring(7); 
         this.cliendIds.set(client, clientId);
@@ -34,6 +37,7 @@ export class WebSocketGateway23 implements OnGatewayInit, OnGatewayConnection, O
             try {
                 const data = JSON.parse(raw.toString());
                 if(data.action === 'subscribe' && data.channel) {
+                    console.log("added new client subscription3 ===> ", JSON.stringify(data), clientId);
                     this.connectionManager.addSubscription(clientId, data.channel);
                 } else if(data.action === 'unsubscribe' && data.channel) {
                     this.connectionManager.removeSubscription(clientId, data.channel);
@@ -43,7 +47,7 @@ export class WebSocketGateway23 implements OnGatewayInit, OnGatewayConnection, O
                 client.send(JSON.stringify({error:`Invalid message format`}));
             }
         });
-        
+        console.log("added new client subscription4 ===> ", clientId);
         this.connectionManager.addSubscription(clientId, 'websocket-broadcast');
     }
 
