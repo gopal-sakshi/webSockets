@@ -15,6 +15,7 @@ Subscribed to Redis channel: webSockets_repo23:user23user-123
 Client k0vzzd subscirbed to channel: user-123
 
 `step__03`
+- publish a message to this kafka topic --> weSockets-user-updates23 (kafbat-ui)
 Received event from Kafka: {
   routingKey: 'user-123',
   stadium23: 'idi ra final flow -- jose mourinho2333'
